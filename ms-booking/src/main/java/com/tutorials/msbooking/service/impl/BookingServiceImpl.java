@@ -1,7 +1,5 @@
 package com.tutorials.msbooking.service.impl;
 
-import static com.tutorials.msbooking.mapper.BookingMapper.BOOKING_MAPPER_INSTANCE;
-
 import com.tutorials.msbooking.entity.Booking;
 import com.tutorials.msbooking.entity.User;
 import com.tutorials.msbooking.exception.BookingException;
@@ -11,12 +9,13 @@ import com.tutorials.msbooking.repository.BookingRepository;
 import com.tutorials.msbooking.service.BookingService;
 import com.tutorials.msbooking.service.FlightService;
 import com.tutorials.msbooking.service.UserService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import static com.tutorials.msbooking.mapper.BookingMapper.BOOKING_MAPPER_INSTANCE;
 
 @Service
 @AllArgsConstructor
@@ -54,9 +53,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingRsModel> getAllBookings(String username) {
-        var bookings = bookingRepo.findAllByUserAndActiveTrue(userService.userByUsername(username));
-
-        return bookings
+        return bookingRepo.findAllByUserAndActiveTrue(userService.userByUsername(username))
                 .stream()
                 .map(BOOKING_MAPPER_INSTANCE::mapEntityToResponse)
                 .toList();
@@ -79,19 +76,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingRsModel> deleteBooking(UUID flightId) {
-        var bookings = bookingRepo.findAllByFlightId(flightId);
-
-        var response = new ArrayList<BookingRsModel>();
-
-        bookings.forEach(booking -> {
-            booking.setActive(false);
-            bookingRepo.save(booking);
-            log.info("Booking active is set to false: {}", booking);
-            response.add(BOOKING_MAPPER_INSTANCE.mapEntityToResponse(booking));
-        });
-
-        return response;
+    public List<BookingRsModel> deleteBatchBooking(UUID flightId) {
+        bookingRepo.updateBookingActiveFalse(flightId);
+        return bookingRepo.findAllByFlightId(flightId).stream().
+                map(BOOKING_MAPPER_INSTANCE::mapEntityToResponse)
+                .toList();
     }
 
     private Booking bookingByIdAndUser(UUID id, User user) {

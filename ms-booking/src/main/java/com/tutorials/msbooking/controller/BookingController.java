@@ -93,10 +93,10 @@ public class BookingController {
     }
 
     @DeleteMapping
-    public ResponseEntity<List<BookingRsModel>> deleteBooking(@RequestParam(name = "flight-id") UUID flightId) {
+    public ResponseEntity<List<BookingRsModel>> deleteBookings(@RequestParam(name = "flight-id") UUID flightId) {
         log.info(REQUEST_LOG_FORMAT, BOOKINGS_URL + "?flight-id=" + flightId, null);
 
-        var response = bookingService.deleteBooking(flightId);
+        var response = bookingService.deleteBatchBooking(flightId);
 
         log.info(RESPONSE_LOG_FORMAT, BOOKINGS_URL + "?flight-id=" + flightId, response);
         return ResponseEntity.ok().body(response);

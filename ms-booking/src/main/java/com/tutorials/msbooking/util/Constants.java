@@ -2,7 +2,9 @@ package com.tutorials.msbooking.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 @NoArgsConstructor(access = AccessLevel.NONE)
 public final class Constants {
     public static final String REQUEST_LOG_FORMAT = "Request data: [URL: {}, payload: {}]";

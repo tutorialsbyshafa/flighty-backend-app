@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findByExternalIdAndUserAndActiveTrue(UUID id, User user);
@@ -28,4 +30,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     default Optional<Booking> findByIdAndUser(UUID id, User user) {
         return findByExternalIdAndUserAndActiveTrue(id, user);
     }
+
+    @Modifying
+    @Query("UPDATE Booking b SET b.active = false WHERE b.flight.externalId = :flightExternalId")
+    void updateBookingActiveFalse(UUID flightExternalId);
 }

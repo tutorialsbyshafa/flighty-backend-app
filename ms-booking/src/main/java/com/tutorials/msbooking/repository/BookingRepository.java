@@ -32,6 +32,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     }
 
     @Modifying
-    @Query(" UPDATE Booking b SET b.active = false WHERE b.flight.id = :flightId")
-    void updateBookingActiveFalse(UUID flightId);
+    @Query("UPDATE Booking b SET b.active = false WHERE b.flight.externalId = :flightExternalId")
+    void updateBookingActiveFalse(UUID flightExternalId);
 }
